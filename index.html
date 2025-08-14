@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Selamat Ulang Tahun Sayang</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    overflow: hidden;
+  }
+  h1 {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    font-size: 1.5em;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 10;
+  }
+  .slideshow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .slideshow img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  .slideshow img.active {
+    opacity: 1;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<h1>Selamat ulang tahun sayangnya aku, semoga di ulang tahun ini kamu menjadi pribadi yang lebih dewasa dan baik, semoga rezekimu dilancarkan dan diperbanyak serta mendapatkan berkah dari setiap rezekinya, semoga kamu panjang umur sehat selalu dan senantiasa mendapatkan kebahagiaan. Love You ❤️ -From Fajar to gocing</h1>
+
+<div class="slideshow">
+  <!-- Ganti nama file sesuai foto yang di-upload ke repo -->
+  <img src="foto1.jpg" class="active">
+  <img src="foto2.jpg">
+  <img src="foto3.jpg">
+  <img src="foto4.jpg">
+  <img src="foto5.jpg">
+  <img src="foto6.jpg">
+</div>
+
+<audio id="bgm" autoplay loop muted>
+  <!-- Ganti nama file musik sesuai di repo -->
+  <source src="lagu.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="hearts"></canvas>
+
+<script>
+// --- Slideshow ---
+let slides = document.querySelectorAll('.slideshow img');
+let index = 0;
+setInterval(() => {
+  slides[index].classList.remove('active');
+  index = (index + 1) % slides.length;
+  slides[index].classList.add('active');
+}, 3000);
+
+// --- Autoplay Musik ---
+setTimeout(() => {
+  let audio = document.getElementById('bgm');
+  audio.muted = false;
+  audio.play().catch(()=>{});
+}, 1000);
+
+// --- Efek Hati ---
+const canvas = document.getElementById('hearts');
+const ctx = canvas.getContext('2d');
+let hearts = [];
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+function drawHeart(x, y, size, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(size, size);
+  ctx.beginPath();
+  ctx.moveTo(0, -2);
+  ctx.bezierCurveTo(2, -4, 4, 0, 0, 3);
+  ctx.bezierCurveTo(-4, 0, -2, -4, 0, -2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+function createHeart() {
+  hearts.push({
+    x: Math.random() * canvas.width,
+    y: canvas.height + 10,
+    size: Math.random() * 0.5 + 0.5,
+    speed: Math.random() * 1 + 0.5,
+    color: `rgba(255, ${Math.floor(Math.random()*100+100)}, ${Math.floor(Math.random()*100+100)}, 0.8)`
+  });
+}
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < hearts.length; i++) {
+    let h = hearts[i];
+    drawHeart(h.x, h.y, h.size, h.color);
+    h.y -= h.speed;
+    if (h.y < -10) {
+      hearts.splice(i, 1);
+      i--;
+    }
+  }
+  requestAnimationFrame(animate);
+}
+setInterval(createHeart, 300);
+animate();
+</script>
+
+</body>
+</html>
